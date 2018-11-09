@@ -9,3 +9,6 @@ after_success:
 branches:
   except:
     - /^v\d+\.\d+\.\d+$/
+script:
+  - commitlint-travis
+  - npm test
