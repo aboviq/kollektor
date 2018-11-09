@@ -3,6 +3,9 @@
 	"version": "0.0.0-development",
 	"description": "Generic file collector, useful for mono repos and microservices",
 	"main": "src/index.js",
+	"files": [
+		"src/index.js"
+	],
 	"scripts": {
 		"test": "xo && jest --coverage",
 		"travis-deploy-once": "travis-deploy-once",
@@ -65,6 +68,7 @@
 		}
 	},
 	"dependencies": {
-		"globby": "^8.0.1"
+		"@aboviq/readdir-recursive": "^1.0.1",
+		"matcher": "^1.0.0"
 	}
 }
