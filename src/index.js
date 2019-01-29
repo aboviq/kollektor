@@ -37,23 +37,23 @@ const kollektor = async ({handlers, cwd = process.cwd()}) => {
 
 	const fileMap = new Map();
 
-	for (const fullPath of paths) {
-		const path = relative(resolve(cwd), fullPath);
-		const dirPath = dirname(fullPath);
-		const dir = dirname(path);
-		const file = basename(path);
+	for (const [filePattern, handler] of Object.entries(handlers)) {
+		for (const fullPath of paths) {
+			const path = relative(resolve(cwd), fullPath);
+			const dirPath = dirname(fullPath);
+			const dir = dirname(path);
+			const file = basename(path);
 
-		let data = fileMap.get(dir) || {dir, dirPath};
+			let data = fileMap.get(dir) || {dir, dirPath};
 
-		for (const [filePattern, handler] of Object.entries(handlers)) {
 			if (isMatch(file, filePattern)) {
 				// eslint-disable-next-line no-await-in-loop
 				const result = await handler(fullPath, data);
 				data = {...data, ...result};
 			}
-		}
 
-		fileMap.set(dir, data);
+			fileMap.set(dir, data);
+		}
 	}
 
 	return [...fileMap.values()];

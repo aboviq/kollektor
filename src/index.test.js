@@ -185,6 +185,23 @@ describe('kollektor', () => {
 		);
 	});
 
+	it('merges the result of each handler in specified order', async () => {
+		const result = await kollektor({
+			cwd: resolve(__dirname, '..', 'fixtures'),
+			handlers: {
+				'data.json': (_, {data = []}) => ({data: data.concat('data.json')}),
+				'config.yml': (_, {data = []}) => ({data: data.concat('config.yml')})
+			}
+		});
+
+		expect(result).toEqual(
+			expect.arrayContaining([
+				expect.objectContaining({dir: 'another', data: ['data.json', 'config.yml']}),
+				expect.objectContaining({dir: 'subfolder', data: ['data.json', 'config.yml']})
+			])
+		);
+	});
+
 	it('can handle async handlers', async () => {
 		const result = await kollektor({
 			cwd: resolve(__dirname, '..', 'fixtures'),
