@@ -27,6 +27,11 @@ const getMatchingFiles = (dir, filePatterns) =>
 		filter: ({file}) => filePatterns.some(filePattern => isMatch(file, filePattern))
 	});
 
+const getMatchingFilesSync = (dir, filePatterns) =>
+	readdirRecursive.sync(dir, {
+		filter: ({file}) => filePatterns.some(filePattern => isMatch(file, filePattern))
+	});
+
 const kollektor = async ({handlers, cwd = process.cwd()}) => {
 	validateHandlers(handlers);
 
@@ -59,4 +64,37 @@ const kollektor = async ({handlers, cwd = process.cwd()}) => {
 	return [...fileMap.values()];
 };
 
+const kollektorSync = ({handlers, cwd = process.cwd()}) => {
+	validateHandlers(handlers);
+
+	const filePatterns = Object.keys(handlers);
+	const paths = getMatchingFilesSync(resolve(cwd), filePatterns);
+
+	paths.sort();
+
+	const fileMap = new Map();
+
+	for (const fullPath of paths) {
+		const path = relative(resolve(cwd), fullPath);
+		const dirPath = dirname(fullPath);
+		const dir = dirname(path);
+		const file = basename(path);
+
+		let data = fileMap.get(dir) || {dir, dirPath};
+
+		for (const [filePattern, handler] of Object.entries(handlers)) {
+			if (isMatch(file, filePattern)) {
+				const result = handler(fullPath, data);
+				data = {...data, ...result};
+			}
+		}
+
+		fileMap.set(dir, data);
+	}
+
+	return [...fileMap.values()];
+};
+
 module.exports = kollektor;
+
+kollektor.sync = kollektorSync;

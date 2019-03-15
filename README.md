@@ -19,8 +19,15 @@ npm install @aboviq/kollektor
 ```javascript
 const kollektor = require('@aboviq/kollektor');
 
-// Read all package.json files in a mono-repo:
+// Read all package.json files in a mono-repo async:
 const packages = await kollektor({
+	handlers: {
+		'package.json': packageFile => require(packageFile)
+	}
+});
+
+// ...or sync:
+const packages = kollektor.sync({
 	handlers: {
 		'package.json': packageFile => require(packageFile)
 	}
@@ -36,6 +43,14 @@ const packages = await kollektor({
 | options | `Object` | Options for specifying the behaviour of Kollektor |
 
 Returns: `Promise<Array<Object>>`, all collected information depending on given [handlers](#optionshandlers).
+
+### `kollektor.sync(options)`
+
+| Name    | Type     | Description                                       |
+| ------- | -------- | ------------------------------------------------- |
+| options | `Object` | Options for specifying the behaviour of Kollektor |
+
+Returns: `Array<Object>`, all collected information depending on given [handlers](#optionshandlers).
 
 #### Options
 
@@ -75,6 +90,8 @@ When a file is found that matches the `handlerName` the handler function will be
 | -------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | fullPath | `String` | The full path to the found file                                                                                                                                       |
 | data     | `Object` | This contains `dir` (the relative path of the folder), `dirPath` (the full path of the folder) and all data returned from previous handlers affecting the same folder |
+
+The handler function can be async (return a promise) for the asynchronous version of Kollektor but must be synchronous for the sync version.
 
 Any `Object` returned from a handler is merged with the current folder's `data` and will be fed to the next handler affecting files in the same folder. When all handlers have been called and completed for a specific folder the resulting `data` is what's being returned in the `Array` of collected information. See the tests for more details on how it works.
 

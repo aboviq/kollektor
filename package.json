@@ -68,7 +68,7 @@
 		}
 	},
 	"dependencies": {
-		"@aboviq/readdir-recursive": "^1.0.1",
+		"@aboviq/readdir-recursive": "^1.2.0",
 		"matcher": "^1.0.0"
 	},
 	"publishConfig": {
