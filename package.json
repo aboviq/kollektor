@@ -68,8 +68,8 @@
 		}
 	},
 	"dependencies": {
-		"@aboviq/readdir-recursive": "^1.2.0",
-		"matcher": "^1.0.0"
+		"@aboviq/readdir-recursive": "^1.2.1",
+		"matcher": "^2.0.0"
 	},
 	"publishConfig": {
 		"access": "public"
