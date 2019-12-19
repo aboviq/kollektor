@@ -4,11 +4,19 @@ cache:
     - ~/.npm
 node_js:
   - 'lts/*'
-after_success:
-  - npm run travis-deploy-once "npm run semantic-release"
 branches:
   except:
     - /^v\d+\.\d+\.\d+$/
-script:
-  - commitlint-travis
-  - npm test
+stages:
+  - verify
+  - test
+  - name: deploy
+    if: branch = master
+jobs:
+  include:
+    - stage: verify
+      script: commitlint-travis
+    - stage: test
+      script: npm test
+    - stage: deploy
+      script: npm run semantic-release

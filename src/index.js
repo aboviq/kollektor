@@ -9,12 +9,15 @@ const validateHandlers = handlers => {
 	if (!handlers) {
 		throw new TypeError('Missing handlers option');
 	}
+
 	if (typeof handlers !== 'object') {
 		throw new TypeError('The handlers option must be an object');
 	}
+
 	if (isObjectEmpty(handlers)) {
 		throw new TypeError('The handlers option must contain at least one handler');
 	}
+
 	Object.entries(handlers).forEach(([filename, handler]) => {
 		if (typeof handler !== 'function') {
 			throw new TypeError(`The handler for "${filename}" is not a function`);
